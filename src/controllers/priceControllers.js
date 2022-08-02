@@ -127,9 +127,12 @@ exports.patchPrice = async (req, res) => {
         let body = await requestBodyFieldsChecker(req, res, tableName).then(response => response)
         if(!body) return
 
+
+        console.log(body)
+
         const query = await client.query(
             `UPDATE ${tableName} SET
-            service='${body.service}',
+            servicename='${body.servicename}',
             price='${body.price}',
             active='${body.active}',
             description='${body.description}'
@@ -140,6 +143,7 @@ exports.patchPrice = async (req, res) => {
             message = getReaponse('NOT-FOUND');
         }
     } catch (error) {
+        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!')
         message = getReaponse('DB-ERROR'); 
     }
     res.status(message.statusCode).json(message)

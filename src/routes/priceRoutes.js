@@ -6,6 +6,7 @@ const bodyChecker = require("../middleware/requestBodyChecker");
 
 
 
+
 router.post('/', tokenChecker, bodyChecker, addPrice);
 router.get('/', getPrices);
 router.get('/:id', getPrice);

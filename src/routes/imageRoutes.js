@@ -14,6 +14,7 @@ module.exports = function (app) {
     const maxCount = 20 // максимальное кол-во изображений для загрузки
     app.get('/images', apiKeyChecker, controller.loadImages);
     app.get('/image/:id', apiKeyChecker, controller.loadImage);
+    app.post('/image', apiKeyChecker, tokenChecker, controller.upload.single('image_path'), controller.uploadSingleImage);
     app.post('/images', apiKeyChecker, tokenChecker, controller.upload.array('image_path', maxCount), controller.uploadMultipleImage);
     app.delete('/images', apiKeyChecker, tokenChecker, controller.deleteAllImages);
     app.delete('/image/:id', apiKeyChecker, tokenChecker, controller.deleteImage);  
