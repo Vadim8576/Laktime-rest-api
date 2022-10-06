@@ -47,6 +47,10 @@ exports.uploadSingleImage = async (req, res) => {
 
 exports.uploadMultipleImage = async (req, res) => {
     const len = req.files.length;
+
+    console.log(req)
+
+
     if (len === 0) {
         res.status(400).json('Изображения не выбраны!')
         return
@@ -54,7 +58,7 @@ exports.uploadMultipleImage = async (req, res) => {
     let message;
     const data = [];
     try {
-        for (var i = 0; i < len; i++) {
+        for (let i = 0; i < len; i++) {
             const image_path = req.files[i].filename
             const image_id = image_path.substring(6, image_path.length - 4);
             const query = await client.query(`INSERT INTO laktime_images(image_id, image_path) VALUES ('${image_id}','${image_path}')`);
@@ -77,12 +81,12 @@ exports.uploadMultipleImage = async (req, res) => {
 
 exports.loadImages = async (req, res) => {
     let message;
-    let data;
-    let query;
     try {
-        query = await client.query(`SELECT * FROM laktime_images`);
-        data = query.rows;
-        (query.rowCount > 0) ? message = getReaponse('OK', data) :  message = getReaponse('NOT-FOUND');
+        const query = await client.query(`SELECT * FROM laktime_images`);
+        if (query.rowCount >= 0) {
+            const data = query.rows;
+            message = getReaponse('OK', data);
+        } 
         return res.status(message.statusCode).json(message)
     } catch (error) {
         message = getReaponse('DB-ERROR')
@@ -95,12 +99,12 @@ exports.loadImages = async (req, res) => {
 exports.loadImage = async (req, res) => {
     let id = req.params.id;
     let message;
-    let data;
-    let query;
     try {
-        query = await client.query(`SELECT * FROM laktime_images WHERE image_id='${id}'`);
-        data = query.rows;
-        (query.rowCount > 0) ? message = getReaponse('OK', data) : message = getReaponse('NOT-FOUND');
+        const query = await client.query(`SELECT * FROM laktime_images WHERE image_id='${id}'`);
+        if (query.rowCount >= 0) {
+            const data = query.rows;
+            message = getReaponse('OK', data);
+        } 
         return res.status(message.statusCode).json(message)
     } catch (error) {
         message = getReaponse('DB-ERROR')

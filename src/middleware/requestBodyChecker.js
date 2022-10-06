@@ -5,6 +5,8 @@ module.exports = (req, res, next) => {
 
     const body = req.body || null;
 
+    console.log('body', body)
+
     if(body) {
         for(const key in body) {
             if(!body[key]) {

@@ -17,9 +17,6 @@ exports.getReaponse = (action, data = null) => {
         case 'ERROR':
             return { 'statusCode': 400, 'ok': false, message: 'Ошибка! Операция не выполнена!', 'data': data }
 
-        case 'BODY-WRONG':
-            return { 'statusCode': 500, 'ok': false, message: 'Неверное тело запроса!', 'data': data }
-
         case 'NOT-FOUND':
             return { 'statusCode': 400, 'ok': false, message: 'Данные не найдены!', 'data': data }
 
