@@ -1,3 +1,15 @@
+# JPEG
+*.jpg
+*.jpeg
+*.jpe
+*.jif
+*.jfif
+*.jfi
+
+# Portable Network Graphics
+*.png
+
+
 # Logs
 logs
 *.log
