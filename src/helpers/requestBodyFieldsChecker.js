@@ -7,8 +7,6 @@ exports.requestBodyFieldsChecker = async (req, res, tableName, skip = null) => {
 
     const body = req.body || null;
 
-    // console.log('requestBodyFieldsChecker, body', body)
-
     if(!body) return null
 
     let tableInfo;
@@ -27,8 +25,8 @@ exports.requestBodyFieldsChecker = async (req, res, tableName, skip = null) => {
 
     let fields = tableInfo.rows.filter(field => (field.column_name !== 'id' && field.column_name !== skip));
 
-    console.log('body = ', body)
-    console.log('fields = ', fields)
+    // console.log('body = ', body)
+    // console.log('fields = ', fields)
 
     const bodyLen = Object.keys(body).length;
     const fieldsLen = fields.length;

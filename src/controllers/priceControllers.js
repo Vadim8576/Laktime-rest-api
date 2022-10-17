@@ -5,51 +5,47 @@ const { getReaponse } = require('../helpers/responses.js');
 
 const tableName = 'laktime_price';
 
+// const directory = process.env.PRICE_IMAGES_PATH;
 
-const directory = process.env.PRICE_IMAGES_PATH;
+// const multerStorage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, `./${directory}`);
+//     },
+//     filename: (req, file, cb) => {
+//         const image_name = Date.now()
+//         cb(null, `image-${image_name}` + path.extname(file.originalname))
+//         //path.extname get the uploaded file extension
+//     }
+// });
 
-const multerStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, `./${directory}`);
-    },
-    filename: (req, file, cb) => {
-        const image_name = Date.now()
-        cb(null, `image-${image_name}` + path.extname(file.originalname))
-        //path.extname get the uploaded file extension
-    }
-});
+// const multerFilter = (req, file, cb) => {
+//     if (!file.originalname.match(/\.(png|jpg)$/)) {
+//         // upload only png and jpg format
+//         return cb(new Error('Можно загрузить изображения только в PNG и JPG формате'))
+//     }
+//     cb(null, true)
+// };
 
-const multerFilter = (req, file, cb) => {
-    if (!file.originalname.match(/\.(png|jpg)$/)) {
-        // upload only png and jpg format
-        return cb(new Error('Можно загрузить изображения только в PNG и JPG формате'))
-    }
-    cb(null, true)
-};
-
-const upload = multer({
-    storage: multerStorage,
-    fileFilter: multerFilter
-});
+// const upload = multer({
+//     storage: multerStorage,
+//     fileFilter: multerFilter
+// });
 
 
-const uploadPriceImage = async (image_name) => {
-    console.log('uploadSingleImage image_path = ', image_name)
+// const uploadPriceImage = async (image_name) => {
+//     console.log('uploadSingleImage image_path = ', image_name)
 
-    // const allquery = await client.query
-    // (`INSERT INTO laktime_images(image_id, image_path)  VALUES ('${req.body.name}', '${req.file.filename}')`);
+//     // const allquery = await client.query
+//     // (`INSERT INTO laktime_images(image_id, image_path)  VALUES ('${req.body.name}', '${req.file.filename}')`);
 
-    res.status(200).json({ 'statusCode': 200, 'ok': OK, message: 'Image added', 'data': [] });
-}
-
+//     res.status(200).json({ 'statusCode': 200, 'ok': OK, message: 'Image added', 'data': [] });
+// }
 
 
 
 exports.addPrice = async (req, res) => {
     let message;
-    console.log('addPrice ', req.body)
-
-    let body = await requestBodyFieldsChecker(req, res, tableName).then(response => response)
+    const body = await requestBodyFieldsChecker(req, res, tableName);
     if(!body) return
     
     try {    
@@ -63,7 +59,8 @@ exports.addPrice = async (req, res) => {
         );
 
         if (query.rowCount == 1) {
-            message = getReaponse('OK');
+            const query = await client.query(`SELECT * FROM ${tableName}`);  
+            message = getReaponse('OK', query?.rows);
         } else {
             message = getReaponse('ERROR');
         }
@@ -77,8 +74,6 @@ exports.addPrice = async (req, res) => {
 
 exports.getPrices = async (req, res) => {
     let message;
-
-
     try {
         const query = await client.query(`SELECT * FROM ${tableName};`);
 
@@ -87,7 +82,6 @@ exports.getPrices = async (req, res) => {
             message = getReaponse('OK', data);
         } 
     } catch (error) {
-        // message = { 'statusCode': 200, 'ok': false, message: error };
         message = getReaponse('DB-ERROR'); 
     }
     res.status(message.statusCode).json(message)
@@ -96,7 +90,7 @@ exports.getPrices = async (req, res) => {
 
 
 exports.getPrice = async (req, res) => {
-    let id = req.params.id;
+    const id = req.params.id;
     let message;
 
     try {
@@ -104,14 +98,11 @@ exports.getPrice = async (req, res) => {
 
         if (query.rowCount > 0) {
             const data = query.rows;
-            // message = { 'statusCode': 200, 'ok': true, message: `Price with ID=${id} is loaded`, 'data': data }
             message = getReaponse('OK', data);
         } else {
-            // message = { 'statusCode': 200, 'ok': false, message: `Price with ID=${id} not found`, 'data': null }
             message = getReaponse('NOT-FOUND');
         }
     } catch (error) {
-        // message = { 'statusCode': 200, 'ok': false, message: error };
         message = getReaponse('DB-ERROR');    
     }
     res.status(message.statusCode).json(message)
@@ -124,15 +115,11 @@ exports.deleteAllPrices = async (req, res) => {
     try {
         const query = await client.query(`DELETE FROM ${tableName}`);
         if(query.rowCount > 0) {
-            // message = { 'statusCode': 200, 'ok': true, message: 'All prices is removed' }
             message = getReaponse('OK');
         } else {
-            // message = { 'statusCode': 200, 'ok': false, message: `Prices not found` };
             message = getReaponse('NOT-FOUND');
         }
-        
     } catch (error) {
-        // message = { 'statusCode': 200, 'ok': false, message: error }
         message = getReaponse('DB-ERROR');   
     }
     res.status(message.statusCode).json(message);
@@ -143,18 +130,14 @@ exports.deletePrice = async (req, res) => {
     let id = req.params.id;
     let message;
     try {
-        let query = await client.query(`DELETE FROM ${tableName} WHERE id='${id}'`);
-
+        const query = await client.query(`DELETE FROM ${tableName} WHERE id='${id}'`);
         if(query.rowCount > 0) {
-            // message = { 'statusCode': 200, 'ok': true, message: `Price with id=${id} is removed` }
-
-            message = getReaponse('OK');
+            const query = await client.query(`SELECT * FROM ${tableName}`);  
+            message = getReaponse('OK', query?.rows) 
         } else {
-            // message = { 'statusCode': 200, 'ok': false, message: `Price with id=${id} not found` }
             message = getReaponse('NOT-FOUND');
         } 
     } catch (error) {
-        // message = { 'statusCode': 200, 'ok': false, message: `Price with id=${id} not found` };
         message = getReaponse('DB-ERROR'); 
     }
     res.status(message.statusCode).json(message)
@@ -167,12 +150,8 @@ exports.patchPrice = async (req, res) => {
     let message;
 
     try {
-        let body = await requestBodyFieldsChecker(req, res, tableName).then(response => response)
+        const body = await requestBodyFieldsChecker(req, res, tableName);
         if(!body) return
-
-
-        console.log(body)
-
         const query = await client.query(
             `UPDATE ${tableName} SET
             servicename='${body.servicename}',
@@ -180,13 +159,13 @@ exports.patchPrice = async (req, res) => {
             active='${body.active}',
             description='${body.description}'
             WHERE id='${id}'`);
-        if (query.rowCount > 0) {
-            message = getReaponse('OK');
+        if (query.rowCount == 1) {
+            const query = await client.query(`SELECT * FROM ${tableName}`);  
+            message = getReaponse('OK', query?.rows) 
         } else {
             message = getReaponse('NOT-FOUND');
         }
     } catch (error) {
-        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!')
         message = getReaponse('DB-ERROR'); 
     }
     res.status(message.statusCode).json(message)

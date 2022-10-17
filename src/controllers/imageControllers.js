@@ -46,28 +46,33 @@ exports.uploadSingleImage = async (req, res) => {
 
 
 exports.uploadMultipleImage = async (req, res) => {
+    console.log('!!!!!!!!!!!!!!!!!',req)
     const len = req.files.length;
 
-    console.log(req)
-
+    
 
     if (len === 0) {
         res.status(400).json('Изображения не выбраны!')
         return
     }
     let message;
-    const data = [];
+    const valuesArr = [];
     try {
         for (let i = 0; i < len; i++) {
             const image_path = req.files[i].filename
             const image_id = image_path.substring(6, image_path.length - 4);
-            const query = await client.query(`INSERT INTO laktime_images(image_id, image_path) VALUES ('${image_id}','${image_path}')`);
-
-            if (query.rowCount === 1) data.push({ image_path })
+            valuesArr.push(`('${image_id}','${image_path}')`)
         }
+        const valuesStr = valuesArr.join(',')
 
-        (len == data.length) ? message = getReaponse('OK', data) : message = getReaponse('DB-ERROR');
+        const query = await client.query(`INSERT INTO laktime_images(image_id, image_path) VALUES ${valuesStr}`);
 
+        if(query.rowCount !== len) {
+            message = getReaponse('DB-ERROR');
+        } else {
+            const query = await client.query(`SELECT * FROM laktime_images`);
+            if(query.rowCount >= 0) message = getReaponse('OK', query.rows)
+        }
         return res.status(message.statusCode).json(message)
 
     } catch (error) {
@@ -145,7 +150,8 @@ exports.deleteImage = async (req, res) => {
            
             if (query.rowCount === 1) {
                 fs.unlinkSync(filePath);
-                message = getReaponse('OK');
+                const query = await client.query(`SELECT * FROM laktime_images`);  
+                message = getReaponse('OK', query?.rows)   
             }
         }
         return res.status(message.statusCode).json(message)
