@@ -7,7 +7,7 @@ exports.getReaponse = (action, data = null) => {
     switch (action) {
         case 'OK':
             return { 'statusCode': 200, 'ok': true, message: 'Операция выполнена успешно!', 'data': data }
-        
+
         case 'MAIL-OK':
             return { 'statusCode': 200, 'ok': true, message: 'Письмо успешно отправлено пользователю', 'data': data }
 
@@ -61,6 +61,9 @@ exports.getReaponse = (action, data = null) => {
 
         case 'ACCESS-DENIED':
             return { 'statusCode': 403, 'ok': false, message: 'Нет доступа!', 'data': data }
+
+        case 'EXTENSION-ERROR':
+            return { 'statusCode': 500, 'ok': false, message: 'Неверный формат файла!', 'data': data }
 
         default:
             break;

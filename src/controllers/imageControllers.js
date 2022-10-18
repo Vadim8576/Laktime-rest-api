@@ -1,4 +1,5 @@
 require('dotenv').config();// для работы с .env
+const sizeOf = require('image-size');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
@@ -11,18 +12,22 @@ const directory = process.env.IMAGES_PATH;
 const multerStorage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, `./${directory}`);
+        const dimensions = sizeOf(`images/00ec92febdd7358c0b8481082ffe9c4f`)
+        console.log('dimensions', dimensions)
     },
     filename: (req, file, cb) => {
         const image_id = Date.now()
+        console.log('fileName', file.originalname)
         cb(null, `image-${image_id}` + path.extname(file.originalname))
-        //path.extname get the uploaded file extension
     }
 });
 
 const multerFilter = (req, file, cb) => {
     if (!file.originalname.match(/\.(png|jpg)$/)) {
-        // upload only png and jpg format
-        return cb(new Error('Можно загрузить изображения только в PNG и JPG формате'))
+        return cb('Можно загрузить изображения только в PNG и JPG формате')
+        // return cb(new Error('Можно загрузить изображения только в PNG и JPG формате'))
+        const  message = getReaponse('EXTENSION-ERROR')
+        return res.status(message.statusCode).json(message)
     }
     cb(null, true)
 };
@@ -46,10 +51,8 @@ exports.uploadSingleImage = async (req, res) => {
 
 
 exports.uploadMultipleImage = async (req, res) => {
-    console.log('!!!!!!!!!!!!!!!!!',req)
-    const len = req.files.length;
 
-    
+    const len = req.files.length;
 
     if (len === 0) {
         res.status(400).json('Изображения не выбраны!')
@@ -74,9 +77,7 @@ exports.uploadMultipleImage = async (req, res) => {
             if(query.rowCount >= 0) message = getReaponse('OK', query.rows)
         }
         return res.status(message.statusCode).json(message)
-
     } catch (error) {
-        console.log(error)
         message = getReaponse('DB-ERROR')
         return res.status(message.statusCode).json(message)
     }
