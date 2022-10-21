@@ -12,22 +12,18 @@ const directory = process.env.IMAGES_PATH;
 const multerStorage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, `./${directory}`);
-        const dimensions = sizeOf(`images/00ec92febdd7358c0b8481082ffe9c4f`)
-        console.log('dimensions', dimensions)
     },
     filename: (req, file, cb) => {
-        const image_id = Date.now()
-        console.log('fileName', file.originalname)
-        cb(null, `image-${image_id}` + path.extname(file.originalname))
+        const image_id = Date.now();
+        cb(null, `image-${image_id}` + path.extname(file.originalname));
     }
 });
 
 const multerFilter = (req, file, cb) => {
     if (!file.originalname.match(/\.(png|jpg)$/)) {
-        return cb('Можно загрузить изображения только в PNG и JPG формате')
-        // return cb(new Error('Можно загрузить изображения только в PNG и JPG формате'))
-        const  message = getReaponse('EXTENSION-ERROR')
-        return res.status(message.statusCode).json(message)
+        return cb(new Error('Можно загрузить изображения только в PNG и JPG формате'))
+        // const  message = getReaponse('EXTENSION-ERROR')
+        // return res.status(message.statusCode).json(message)
     }
     cb(null, true)
 };
