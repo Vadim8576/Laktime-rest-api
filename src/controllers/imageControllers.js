@@ -14,8 +14,12 @@ const multerStorage = multer.diskStorage({
         cb(null, `./${directory}`);
     },
     filename: (req, file, cb) => {
-        const image_id = Date.now();
-        cb(null, `image-${image_id}` + path.extname(file.originalname));
+        let image_id1 = Date.now();
+        let image_id2 = Date.now();
+        while (image_id1 === image_id2) {
+            image_id2 = Date.now();
+        }
+        cb(null, `image-${image_id2}${path.extname(file.originalname)}`); 
     }
 });
 
@@ -138,12 +142,13 @@ exports.deleteImage = async (req, res) => {
     let id = req.params.id;
     let message = getReaponse('DB-ERROR');
     try {
-        let query = await client.query(`SELECT * FROM laktime_images WHERE image_id='${id}'`);
+        let query = await client.query(`SELECT * FROM laktime_images WHERE id='${id}'`);
+
         if (query.rowCount === 1) {
             const fileName = query.rows[0].image_path;
             const filePath = `./${directory}/${fileName}`;
             
-            query = await client.query(`DELETE FROM laktime_images WHERE image_id='${id}'`);
+            query = await client.query(`DELETE FROM laktime_images WHERE id='${id}'`);
            
             if (query.rowCount === 1) {
                 fs.unlinkSync(filePath);
