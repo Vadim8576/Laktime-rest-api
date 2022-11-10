@@ -3,8 +3,8 @@ const { getReaponse } = require('../../helpers/responses.js');
 
 const tableName = 'laktime_price';
 
-exports.addPrice = async (body, res) => {
-  const {servicename, price, active, description} = body;
+exports.addPrice = async (req, res) => {
+  const {servicename, price, active, description} = req.body;
   const query = await client.query(
     `INSERT INTO ${tableName}
     (servicename, price, active, description)
@@ -85,7 +85,7 @@ exports.deletePrice = async (req, res) => {
   return res.status(message.statusCode).json(message);
 }
 
-exports.patchPrice = async (body, res) => {
+exports.patchPrice = async (req, res) => {
   let message;
 
   let id = req.params.id;
@@ -94,7 +94,7 @@ exports.patchPrice = async (body, res) => {
     return res.status(message.statusCode).json(message);
   }
 
-  const {servicename, price, active, description} = body;
+  const {servicename, price, active, description} = req.body;
 
   const query = await client.query(`
     UPDATE ${tableName}

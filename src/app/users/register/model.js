@@ -5,7 +5,8 @@ const jwt = require("jsonwebtoken");
 const { getReaponse } = require("../../../helpers/responses.js");
 const tableName = 'laktime_users';
 
-exports.registerUser = async (body, res) => {
+exports.registerUser = async (req, res) => {
+  const { body } = req;
   const password = body.password.toString();
   
   const query = await client.query(`SELECT * FROM ${tableName} WHERE email= $1;`, [body.email]); //Checking if user already exists

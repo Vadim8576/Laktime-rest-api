@@ -7,7 +7,8 @@ const { getReaponse } = require("../../../helpers/responses.js");
 
 const tableName = 'laktime_users';
 
-exports.loginUser = async (body, res) => {
+exports.loginUser = async (req, res) => {
+  const { body } = req;
   const query = await client.query(`SELECT * FROM ${tableName} WHERE email=$1;`, [body.email]);
   const user = query.rows;
 

@@ -5,7 +5,7 @@ const { getReaponse } = require('./responses.js');
 exports.requestBodyFieldsChecker = async (req, res, tableName, skip = null) => {
     // skip - наименование поля, которое отфильтровывается (не учитывается)
 
-    const body = req.body || null;
+    const body = req.body;
 
     if(!body) return null;
 

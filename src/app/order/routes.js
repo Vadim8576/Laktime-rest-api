@@ -9,7 +9,6 @@ const {
   patchOrder
 } = require("./controllers");
 
-
 const tokenChecker = require('../../middleware/tokenChecker');
 
 router.get('/', tokenChecker, getOrders);

@@ -3,8 +3,8 @@ const { getReaponse } = require('../../helpers/responses.js');
 
 const tableName = 'laktime_order';
 
-exports.addOrder = async (body, res) => {
-  const { service, complited, date, time, name, telephone, email, comment } = body;
+exports.addOrder = async (req, res) => {
+  const { service, complited, date, time, name, telephone, email, comment } = req.body;
   const query = await client.query(`
     INSERT INTO ${tableName}
     (service, complited, date, time, name, telephone, email, comment)
@@ -20,17 +20,17 @@ exports.addOrder = async (body, res) => {
     ')`
   );
 
-  if(query.rowCount === 1) {
+  if (query.rowCount === 1) {
     const query = await client.query(`SELECT * FROM ${tableName}`);
     const message = getReaponse('OK', query.rows);
     return res.status(message.statusCode).json(message);
-  } 
+  }
 
   const message = getReaponse('DB-ERROR');
   return res.status(message.statusCode).json(message);
 }
 
-exports.getPrices = async (req, res) => {
+exports.getOrders = async (req, res) => {
   let message;
   const query = await client.query(`SELECT * FROM ${tableName};`);
   if (query.rowCount >= 0) {
@@ -42,7 +42,7 @@ exports.getPrices = async (req, res) => {
   return res.status(message.statusCode).json(message);
 }
 
-exports.getPrice = async (req, res) => {
+exports.getOrder = async (req, res) => {
   let message;
   const id = req.params.id;
   if (!id) {
@@ -60,7 +60,7 @@ exports.getPrice = async (req, res) => {
   return res.status(message.statusCode).json(message);
 }
 
-exports.deleteAllPrices = async (req, res) => {
+exports.deleteAllOrders = async (req, res) => {
   let message;
   const query = await client.query(`DELETE FROM ${tableName}`);
   if (query.rowCount > 0) {
@@ -71,7 +71,7 @@ exports.deleteAllPrices = async (req, res) => {
   return res.status(message.statusCode).json(message);
 }
 
-exports.deletePrice = async (req, res) => {
+exports.deleteOrder = async (req, res) => {
   let message;
   let id = req.params.id;
   if (!id) {
@@ -89,7 +89,7 @@ exports.deletePrice = async (req, res) => {
   return res.status(message.statusCode).json(message);
 }
 
-exports.patchPrice = async (body, res) => {
+exports.patchOrder = async (req, res) => {
   let message;
 
   let id = req.params.id;
@@ -98,19 +98,22 @@ exports.patchPrice = async (body, res) => {
     return res.status(message.statusCode).json(message);
   }
 
-  const { servicename, price, active, description } = body;
+  const { service, complited, date, time, name, telephone, email, comment } = req.body;
 
   const query = await client.query(`
-    UPDATE ${tableName}
-    SET
-    servicename='${servicename}',
-    price='${price}',
-    active='${active}',
-    description='${description}'
+    UPDATE ${tableName} SET
+    service='${service}',
+    complited='${complited}',
+    date='${date}',
+    time='${time}',
+    name='${name}',
+    telephone='${telephone}',
+    email='${email}',
+    comment='${comment}'
     WHERE id='${id}'
   `);
 
-  if (query.rowCount == 1) {
+  if (query.rowCount === 1) {
     const query = await client.query(`SELECT * FROM ${tableName}`);
     message = getReaponse('OK', query.rows)
   } else {
@@ -118,3 +121,4 @@ exports.patchPrice = async (body, res) => {
   }
   return res.status(message.statusCode).json(message);
 }
+

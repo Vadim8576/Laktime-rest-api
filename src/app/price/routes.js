@@ -9,14 +9,13 @@ const {
   patchPrice
 } = require("./controllers");
 const tokenChecker = require("../../middleware/tokenChecker");
-const bodyChecker = require("../../middleware/requestBodyChecker");
 
 
-router.post('/', tokenChecker, bodyChecker, addPrice);
+router.post('/', tokenChecker, addPrice);
 router.get('/', getPrices);
 router.get('/:id', getPrice);
 router.delete('/:id', tokenChecker, deletePrice);
-router.put('/:id', tokenChecker, bodyChecker, patchPrice);
+router.put('/:id', tokenChecker, patchPrice);
 router.delete('/', tokenChecker, deleteAllPrices);
 
 

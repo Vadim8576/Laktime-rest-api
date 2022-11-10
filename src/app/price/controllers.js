@@ -1,15 +1,18 @@
-const client = require('../../db/db.js');
 const { requestBodyFieldsChecker } = require('../../helpers/requestBodyFieldsChecker.js');
 const { getReaponse } = require('../../helpers/responses.js');
 const { addPrice, getPrices, getPrice, deleteAllPrices, deletePrice, patchPrice } = require('./models.js');
 
 const tableName = 'laktime_price';
 
+
+
 exports.addPrice = async (req, res) => {
     try {
+        // keys = Object.keys(req.body);
+        // console.log('body keys = ', keys)
         const body = await requestBodyFieldsChecker(req, res, tableName);
         if (!body) return
-        return await addPrice(body, res)
+        return await addPrice(req, res)
     } catch (error) {
         const message = getReaponse('DB-ERROR');
         return res.status(message.statusCode).json(message)
@@ -63,7 +66,7 @@ exports.patchPrice = async (req, res) => {
     try {
         const body = await requestBodyFieldsChecker(req, res, tableName);
         if (!body) return
-        return await patchPrice(body, res);
+        return await patchPrice(req, res);
     } catch (error) {
         const message = getReaponse('DB-ERROR');
         return res.status(message.statusCode).json(message)

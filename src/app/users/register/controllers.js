@@ -7,7 +7,7 @@ exports.register = async (req, res) => {
     try { 
         const body = await requestBodyFieldsChecker(req, res, tableName)      
         if(!body) return;
-        return await registerUser(body, res);
+        return await registerUser(req, res);
     } catch (err) {
         const message = getReaponse('DB-ERROR');
         res.status(message.statusCode).json(message);

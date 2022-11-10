@@ -7,7 +7,7 @@ exports.login = async (req, res) => {
     try {
         const body = await requestBodyFieldsChecker(req, res, tableName, 'nickname');
         if(!body) return;
-        return await loginUser(body, res); 
+        return await loginUser(req, res); 
     } catch (err) {       
         const message = getReaponse('DB-ERROR');
         res.status(message.statusCode).json(message);
