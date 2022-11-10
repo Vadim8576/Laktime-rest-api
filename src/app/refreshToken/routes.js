@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { refreshToken } = require('./refreshTokenControllers');
+const { refreshToken } = require('./controllers');
 
 const refreshApiKeyChecker = require('../../middleware/refreshTokenApiKeyChecker');
 const refreshTokenChecker = require('../../middleware/refreshTokenChecker');

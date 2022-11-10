@@ -1,0 +1,16 @@
+const { getReaponse } = require("../../../helpers/responses.js");
+const { requestBodyFieldsChecker } = require("../../../helpers/requestBodyFieldsChecker.js");
+const { loginUser } = require("./model.js");
+const tableName = 'laktime_users';
+
+exports.login = async (req, res) => {
+    try {
+        const body = await requestBodyFieldsChecker(req, res, tableName, 'nickname');
+        if(!body) return;
+        return await loginUser(body, res); 
+    } catch (err) {       
+        const message = getReaponse('DB-ERROR');
+        res.status(message.statusCode).json(message);
+    };
+};
+

@@ -7,7 +7,7 @@ const {
   deleteAllOrders,
   deleteOrder,
   patchOrder
-} = require("./orderControllers");
+} = require("./controllers");
 
 
 const tokenChecker = require('../../middleware/tokenChecker');

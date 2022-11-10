@@ -7,13 +7,13 @@ const {
     uploadSingleImage,
     deleteAllImages,
     deleteImage
-} = require('./imageControllers.js');
+} = require('./controllers');
 
 const apiKeyChecker = require("../../middleware/apiKeyChecker");
 const tokenChecker = require("../../middleware/tokenChecker");
 
+const maxCount = 20 // максимальное кол-во изображений для загрузки
 module.exports = function (app) {
-    const maxCount = 20 // максимальное кол-во изображений для загрузки
     app.get('/images', apiKeyChecker, loadImages);
     app.get('/image/:id', apiKeyChecker, loadImage);
     app.post('/image', apiKeyChecker, tokenChecker, upload.single('image_path'), uploadSingleImage);

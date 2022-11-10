@@ -12,18 +12,19 @@ const port = process.env.PORT || 4000;
 app.use(cors());
 app.use(bodyParser.json());
 
-require('./app/images/imageRoutes')(app);
+
 const apiKeyChecker = require('./middleware/apiKeyChecker');
-const user = require('./app/users/usersRoutes');
-const price = require('./app/price/priceRoutes');
-const order = require('./app/order/orderRoutes');
-const sendMail = require('./app/sendMail/mailRoutes');
-const refreshToken = require('./app/token/refreshTokenRoutes');
+const user = require('./app/users/routes');
+const price = require('./app/price/routes');
+const order = require('./app/order/routes');
+const sendMail = require('./app/sendMail/routes');
+const refreshToken = require('./app/refreshToken/routes');
+require('./app/images/routes')(app);
 
 app.use('/user', apiKeyChecker, user);
 app.use('/price', apiKeyChecker, price);
 app.use('/order', apiKeyChecker, order);
-app.use('/token', apiKeyChecker, refreshToken);
+app.use('/refreshtoken', apiKeyChecker, refreshToken);
 app.use('/sendmail', apiKeyChecker, sendMail);
 app.use('/images', express.static('images'))
 

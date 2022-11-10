@@ -1,33 +1,19 @@
 const client = require('../../db/db.js');
 const { requestBodyFieldsChecker } = require('../../helpers/requestBodyFieldsChecker.js');
 const { getReaponse } = require('../../helpers/responses.js');
+const { addOrder } = require('./models.js');
 const tableName = 'laktime_order'
 
 exports.addOrder = async (req, res) => {
-    let message;
-    // const { service, complited, date, time, name, telephone, email, comment } = req.body;
-
-    let body = await requestBodyFieldsChecker(req, res, tableName).then(response => response)
-    if(!body) return
-    
     try {
-        const query = await client.query(`INSERT INTO ${tableName} (service, complited, date, time, name, telephone, email, comment) VALUES ('${body.service}','${body.complited}','${body.date}','${body.time}','${body.name}','${body.telephone}','${body.email}','${body.comment}')`);
-
-        if (query.rowCount == 1) {
-            // message = { 'statusCode': 200, 'ok': true, message: 'Order is added', 'data': null }
-            message = getReaponse('OK');
-        } else {
-            // message = { 'statusCode': 200, 'ok': false, message: 'Order not added', 'data': null }
-            message = getReaponse('ERROR');
-        }
-        res.status(message.statusCode).json(message)
+        let body = await requestBodyFieldsChecker(req, res)
+        if (!body) return
+        return await addOrder
     } catch (error) {
         console.log(error)
-        // message = { 'statusCode': 500, 'ok': false, message: `Some problem. Order not added`, 'data': null }
-        message = getReaponse('DB-ERROR');
+        const message = getReaponse('DB-ERROR');
         res.status(message.statusCode).json(message)
     }
-
 }
 
 
@@ -58,7 +44,7 @@ exports.getOrder = async (req, res) => {
 
     try {
         const query = await client.query(`SELECT * FROM ${tableName} WHERE id='${id}'`);
-     
+
         if (query.rowCount > 0) {
             const data = query.rows;
             // message = { 'statusCode': 200, 'ok': true, message: `Order with ID=${id} is loaded`, 'data': data }
@@ -69,7 +55,7 @@ exports.getOrder = async (req, res) => {
         }
     } catch (error) {
         // message = { 'statusCode': 200, 'ok': false, message: error };
-        message = getReaponse('DB-ERROR');   
+        message = getReaponse('DB-ERROR');
     }
     res.status(message.statusCode).json(message)
 }
@@ -80,16 +66,16 @@ exports.deleteAllOrders = async (req, res) => {
 
     try {
         const query = await client.query(`DELETE FROM ${tableName}`);
-        if(query.rowCount > 0) {
+        if (query.rowCount > 0) {
             // message = { 'statusCode': 200, 'ok': true, message: 'All orders is removed' }
             message = getReaponse('OK');
         } else {
             // message = { 'statusCode': 200, 'ok': false, message: `Orders not found` };
             message = getReaponse('NOT-FOUND');
-        }        
+        }
     } catch (error) {
         // message = { 'statusCode': 200, 'ok': false, message: error }
-        message = getReaponse('DB-ERROR');  
+        message = getReaponse('DB-ERROR');
     }
     res.status(message.statusCode).json(message);
 }
@@ -100,13 +86,13 @@ exports.deleteOrder = async (req, res) => {
     let message;
     try {
         let query = await client.query(`DELETE FROM ${tableName} WHERE id='${id}'`);
-        if(query.rowCount > 0) {
+        if (query.rowCount > 0) {
             // message = { 'statusCode': 200, 'ok': true, message: `Order with id=${id} is removed` }
             message = getReaponse('OK');
         } else {
             // message = { 'statusCode': 200, 'ok': false, message: `Order with id=${id} not found` }
             message = getReaponse('NOT-FOUND');
-        } 
+        }
     } catch (error) {
         // message = { 'statusCode': 200, 'ok': false, message: `Price with id=${id} not found` };
         message = getReaponse('DB-ERROR');
@@ -121,7 +107,7 @@ exports.patchOrder = async (req, res) => {
     let message;
 
     let body = await requestBodyFieldsChecker(req, res, tableName).then(response => response)
-    if(!body) return
+    if (!body) return
 
     try {
         const query = await client.query(`UPDATE ${tableName} SET
@@ -141,7 +127,7 @@ exports.patchOrder = async (req, res) => {
         } else {
             message = getReaponse('NOT-FOUND');
         }
-        
+
     } catch (error) {
         console.log(error)
         message = getReaponse('DB-ERROR');

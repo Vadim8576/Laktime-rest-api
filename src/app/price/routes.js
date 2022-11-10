@@ -7,11 +7,9 @@ const {
   deleteAllPrices,
   deletePrice,
   patchPrice
-} = require("./priceControllers");
+} = require("./controllers");
 const tokenChecker = require("../../middleware/tokenChecker");
 const bodyChecker = require("../../middleware/requestBodyChecker");
-
-
 
 
 router.post('/', tokenChecker, bodyChecker, addPrice);

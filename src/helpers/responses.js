@@ -32,8 +32,11 @@ exports.getReaponse = (action, data = null) => {
         case 'BODY-WRONG':
             return { 'statusCode': 403, 'ok': false, message: 'Неверное тело запроса!', 'data': data }
 
+        case 'PARAMS-WRONG':
+            return { 'statusCode': 403, 'ok': false, message: 'Неверное тело запроса!', 'data': data }
+
         case 'PASSWORD-WRONG':
-            return { 'statusCode': 400, 'ok': false, message: 'Неверный пароль!', 'data': data }
+            return { 'statusCode': 400, 'ok': false, message: 'Неверный параметр!', 'data': data }
 
         case 'DB-ERROR':
             return { 'statusCode': 500, 'ok': false, message: 'Ошибка базы данных!', 'data': data }

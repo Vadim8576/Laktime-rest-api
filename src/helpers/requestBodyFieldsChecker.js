@@ -7,50 +7,42 @@ exports.requestBodyFieldsChecker = async (req, res, tableName, skip = null) => {
 
     const body = req.body || null;
 
-    if(!body) return null
+    if(!body) return null;
 
-    let tableInfo;
-
+    let tableColumns;
     try {
-        tableInfo = await client.query(
+        tableColumns = await client.query(
             `SELECT column_name, data_type
             FROM INFORMATION_SCHEMA.COLUMNS
             WHERE table_name = '${tableName}';`
         );
     } catch (error) {
         const message = getReaponse('DB-ERROR');
-        res.status(message.statusCode).json(message)
-        return null
+        res.status(message.statusCode).json(message);
+        return null;
     }
 
-    let fields = tableInfo.rows.filter(field => (field.column_name !== 'id' && field.column_name !== skip));
-
-    // console.log('body = ', body)
-    // console.log('fields = ', fields)
-
+    let columns = tableColumns.rows.filter(column => (column.column_name !== 'id' && column.column_name !== skip));
     const bodyLen = Object.keys(body).length;
-    const fieldsLen = fields.length;
+    const fieldsLen = columns.length;
 
     if (bodyLen !== fieldsLen) {
         const message = getReaponse('ERROR', 'Неверное количество параметров в теле запроса');
-        res.status(message.statusCode).json(message)
-        return null
+        res.status(message.statusCode).json(message);
+        return null;
     }
         
     let counter = 0;
-
     for (const keyInBody in body) {
-        fields.forEach(field => {        
-            console.log(keyInBody) 
-            if ((keyInBody == field.column_name) && body[keyInBody]+'') counter++;
+        columns.forEach(column => {        
+            if ((keyInBody == column.column_name) && body[keyInBody]+'') counter++;
         })
     }
 
-
-    if (counter !== fields.length) {
+    if (counter !== columns.length) {
         const message = getReaponse('ERROR', 'Не верно заполнены поля в теле запроса');
-        res.status(message.statusCode).json(message)
-        return null
+        res.status(message.statusCode).json(message);
+        return null;
     }
 
     return body;
