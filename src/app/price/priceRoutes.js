@@ -1,8 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const { addPrice, getPrices, getPrice, deleteAllPrices, deletePrice, patchPrice } = require("../controllers/priceControllers");
-const tokenChecker = require("../middleware/tokenChecker");
-const bodyChecker = require("../middleware/requestBodyChecker");
+const {
+  addPrice,
+  getPrices,
+  getPrice,
+  deleteAllPrices,
+  deletePrice,
+  patchPrice
+} = require("./priceControllers");
+const tokenChecker = require("../../middleware/tokenChecker");
+const bodyChecker = require("../../middleware/requestBodyChecker");
 
 
 

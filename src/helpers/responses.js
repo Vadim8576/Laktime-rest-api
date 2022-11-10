@@ -12,7 +12,7 @@ exports.getReaponse = (action, data = null) => {
             return { 'statusCode': 200, 'ok': true, message: 'Письмо успешно отправлено пользователю', 'data': data }
 
         case 'MAIL-ERROR':
-            return { 'statusCode': 400, 'ok': false, message: 'Ошибка сервера! Письмо не отправлено!!', 'data': data }
+            return { 'statusCode': 400, 'ok': false, message: 'Ошибка сервера! Письмо не отправлено!', 'data': data }
 
         case 'ERROR':
             return { 'statusCode': 400, 'ok': false, message: 'Ошибка! Операция не выполнена!', 'data': data }

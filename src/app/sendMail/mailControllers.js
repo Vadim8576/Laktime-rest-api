@@ -3,7 +3,7 @@ require('dotenv').config(); // для работы с .env
 // const client = require('../db/db.js');
 // const jwt = require("jsonwebtoken");
 const nodemailer = require('nodemailer');
-const { getReaponse } = require("../helpers/responses.js");
+const { getReaponse } = require("../../helpers/responses.js");
 
 
 

@@ -1,9 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const { addOrder, getOrder, getOrders, deleteAllOrders, deleteOrder, patchOrder } = require("../controllers/orderControllers");
+const {
+  addOrder,
+  getOrder,
+  getOrders,
+  deleteAllOrders,
+  deleteOrder,
+  patchOrder
+} = require("./orderControllers");
 
 
-const tokenChecker = require('../middleware/tokenChecker');
+const tokenChecker = require('../../middleware/tokenChecker');
 
 router.get('/', tokenChecker, getOrders);
 router.post('/', addOrder); //заказ создает пользователь без регистрации, доступ без токена

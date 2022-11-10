@@ -1,9 +1,9 @@
 const bcrypt = require("bcrypt");
 require('dotenv').config(); // для работы с .env
-const client = require('../db/db.js');
+const client = require('../../db/db.js');
 const jwt = require("jsonwebtoken");
-const { tokensCreator } = require("../helpers/tokensCreator.js");
-const { getReaponse } = require("../helpers/responses.js");
+const { tokensCreator } = require("../../helpers/tokensCreator.js");
+const { getReaponse } = require("../../helpers/responses.js");
 
 
 exports.refreshToken = async (req, res) => {

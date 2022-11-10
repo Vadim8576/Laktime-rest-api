@@ -1,6 +1,6 @@
-const client = require('../db/db.js');
-const { requestBodyFieldsChecker } = require('../helpers/requestBodyFieldsChecker.js');
-const { getReaponse } = require('../helpers/responses.js');
+const client = require('../../db/db.js');
+const { requestBodyFieldsChecker } = require('../../helpers/requestBodyFieldsChecker.js');
+const { getReaponse } = require('../../helpers/responses.js');
 const tableName = 'laktime_order'
 
 exports.addOrder = async (req, res) => {

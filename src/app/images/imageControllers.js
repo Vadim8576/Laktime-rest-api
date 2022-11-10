@@ -1,11 +1,10 @@
 require('dotenv').config();// для работы с .env
-const sizeOf = require('image-size');
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
-const client = require('../db/db.js');
-const { deleteAllImagesFiles } = require('../helpers/deleteAllImagesFiles');
-const { getReaponse } = require('../helpers/responses.js');
+const client = require('../../db/db.js');
+const { deleteAllImagesFiles } = require('../../helpers/deleteAllImagesFiles');
+const { getReaponse } = require('../../helpers/responses.js');
 
 const directory = process.env.IMAGES_PATH;
 
