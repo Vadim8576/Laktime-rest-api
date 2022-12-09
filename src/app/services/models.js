@@ -1,9 +1,9 @@
 const client = require('../../db/db.js');
 const { getReaponse } = require('../../helpers/responses.js');
 
-const tableName = 'laktime_price';
+const tableName = 'laktime_services';
 
-exports.addPrice = async (req, res) => {
+exports.addService = async (req, res) => {
   const {servicename, price, active, description} = req.body;
   const query = await client.query(
     `INSERT INTO ${tableName}
@@ -26,7 +26,7 @@ exports.addPrice = async (req, res) => {
   return res.status(message.statusCode).json(message);
 }
 
-exports.getPrices = async (req, res) => {
+exports.getServices = async (req, res) => {
   let message;
   const query = await client.query(`SELECT * FROM ${tableName};`);
   if(query.rowCount >= 0) {
@@ -38,7 +38,7 @@ exports.getPrices = async (req, res) => {
   return res.status(message.statusCode).json(message);
 }
 
-exports.getPrice = async (req, res) => {
+exports.getService = async (req, res) => {
   let message;
   const id = req.params.id;
   if (!id) {
@@ -56,7 +56,7 @@ exports.getPrice = async (req, res) => {
   return res.status(message.statusCode).json(message);
 }
 
-exports.deleteAllPrices = async (req, res) => {
+exports.deleteAllServices = async (req, res) => {
   let message;
   const query = await client.query(`DELETE FROM ${tableName}`);
   if (query.rowCount > 0) {
@@ -67,7 +67,7 @@ exports.deleteAllPrices = async (req, res) => {
   return res.status(message.statusCode).json(message);
 }
 
-exports.deletePrice = async (req, res) => {
+exports.deleteService= async (req, res) => {
   let message;
   let id = req.params.id;
   if (!id) {
@@ -85,7 +85,7 @@ exports.deletePrice = async (req, res) => {
   return res.status(message.statusCode).json(message);
 }
 
-exports.patchPrice = async (req, res) => {
+exports.patchService = async (req, res) => {
   let message;
 
   let id = req.params.id;

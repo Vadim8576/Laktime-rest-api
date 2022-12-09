@@ -1,18 +1,17 @@
 const { requestBodyFieldsChecker } = require('../../helpers/requestBodyFieldsChecker.js');
 const { getReaponse } = require('../../helpers/responses.js');
-const { addPrice, getPrices, getPrice, deleteAllPrices, deletePrice, patchPrice } = require('./models.js');
+const { addService, getServices, getService, deleteAllServices, deleteService, patchService } = require('./models.js');
 
-const tableName = 'laktime_price';
+const tableName = 'laktime_services';
 
 
-
-exports.addPrice = async (req, res) => {
+exports.addService = async (req, res) => {
     try {
         // keys = Object.keys(req.body);
         // console.log('body keys = ', keys)
         const body = await requestBodyFieldsChecker(req, res, tableName);
         if (!body) return
-        return await addPrice(req, res)
+        return await addService(req, res)
     } catch (error) {
         const message = getReaponse('DB-ERROR');
         return res.status(message.statusCode).json(message)
@@ -20,10 +19,10 @@ exports.addPrice = async (req, res) => {
 }
 
 
-exports.getPrices = async (req, res) => {
+exports.getServices = async (req, res) => {
     let message;
     try {
-       return await getPrices(req, res);
+       return await getServices(req, res);
     } catch (error) {
         message = getReaponse('DB-ERROR');
         res.status(message.statusCode).json(message)
@@ -32,9 +31,9 @@ exports.getPrices = async (req, res) => {
 }
 
 
-exports.getPrice = async (req, res) => {
+exports.getService = async (req, res) => {
     try {
-        return getPrice(req, res);
+        return getService(req, res);
     } catch (error) {
         const message = getReaponse('DB-ERROR');
         res.status(message.statusCode).json(message)
@@ -42,9 +41,9 @@ exports.getPrice = async (req, res) => {
 }
 
 
-exports.deleteAllPrices = async (req, res) => {
+exports.deleteAllServices = async (req, res) => {
     try {
-        return await deleteAllPrices(req, res);
+        return await deleteAllServices(req, res);
     } catch (error) {
         const message = getReaponse('DB-ERROR');
         return res.status(message.statusCode).json(message);
@@ -52,9 +51,9 @@ exports.deleteAllPrices = async (req, res) => {
 }
 
 
-exports.deletePrice = async (req, res) => {
+exports.deleteService = async (req, res) => {
     try {
-        return await deletePrice(req, res);
+        return await deleteService(req, res);
     } catch (error) {
         message = getReaponse('DB-ERROR');
         return res.status(message.statusCode).json(message)
@@ -62,11 +61,11 @@ exports.deletePrice = async (req, res) => {
 }
 
 
-exports.patchPrice = async (req, res) => {
+exports.patchService = async (req, res) => {
     try {
         const body = await requestBodyFieldsChecker(req, res, tableName);
         if (!body) return
-        return await patchPrice(req, res);
+        return await patchService(req, res);
     } catch (error) {
         const message = getReaponse('DB-ERROR');
         return res.status(message.statusCode).json(message)
