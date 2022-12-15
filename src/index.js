@@ -11,6 +11,8 @@ const port = process.env.PORT || 4000;
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 
 
 const apiKeyChecker = require('./middleware/apiKeyChecker');

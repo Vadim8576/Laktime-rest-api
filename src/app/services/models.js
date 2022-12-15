@@ -58,9 +58,26 @@ exports.getService = async (req, res) => {
 
 exports.deleteAllServices = async (req, res) => {
   let message;
-  const query = await client.query(`DELETE FROM ${tableName}`);
+  let query;
+  let ids = req.query.ids;
+
+
+  // message = getReaponse('DB-ERROR');
+  // return res.status(message.statusCode).json(message);
+
+  if(typeof ids !== 'string') {
+    ids = req.query.ids?.join(',').trim();
+  }
+  
+  if(ids) {
+    query = await client.query(`DELETE FROM ${tableName} WHERE id IN (${ids})`)  
+  } else {
+    query = await client.query(`DELETE FROM ${tableName}`);
+  }
+  
   if (query.rowCount > 0) {
-    message = getReaponse('OK');
+    const query = await client.query(`SELECT * FROM ${tableName}`);
+    message = getReaponse('OK', query.rows)
   } else {
     message = getReaponse('NOT-FOUND');
   }
@@ -69,7 +86,7 @@ exports.deleteAllServices = async (req, res) => {
 
 exports.deleteService= async (req, res) => {
   let message;
-  let id = req.params.id;
+  const id = req.params.id;
   if (!id) {
     message = getReaponse('PARAMS-WRONG');
     return res.status(message.statusCode).json(message);

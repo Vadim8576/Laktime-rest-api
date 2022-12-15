@@ -7,6 +7,7 @@ exports.requestBodyFieldsChecker = async (req, res, tableName, skip = null) => {
 
     const body = req.body;
 
+
     if(!body) return null;
 
     let tableColumns;

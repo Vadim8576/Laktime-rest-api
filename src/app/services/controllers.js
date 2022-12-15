@@ -45,6 +45,7 @@ exports.deleteAllServices = async (req, res) => {
     try {
         return await deleteAllServices(req, res);
     } catch (error) {
+        console.log(error)
         const message = getReaponse('DB-ERROR');
         return res.status(message.statusCode).json(message);
     }
