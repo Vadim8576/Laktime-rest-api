@@ -61,14 +61,13 @@ exports.deleteAllServices = async (req, res) => {
   let query;
   let ids = req.query.ids;
 
+  // console.log(req.query)
+  // console.log(ids, typeof ids)
 
-  // message = getReaponse('DB-ERROR');
-  // return res.status(message.statusCode).json(message);
-
-  if(typeof ids !== 'string') {
-    ids = req.query.ids?.join(',').trim();
+  if(ids && typeof ids === 'object') {
+    ids = ids.join(',').trim();
   }
-  
+
   if(ids) {
     query = await client.query(`DELETE FROM ${tableName} WHERE id IN (${ids})`)  
   } else {
