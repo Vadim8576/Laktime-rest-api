@@ -30,13 +30,13 @@ exports.getReaponse = (action, data = null) => {
             return { 'statusCode': 403, 'ok': false, message: 'Неверный token!', 'data': data }
 
         case 'BODY-WRONG':
-            return { 'statusCode': 403, 'ok': false, message: 'Неверное тело запроса!', 'data': data }
+            return { 'statusCode': 400, 'ok': false, message: 'Неверное тело запроса!', 'data': data }
 
         case 'PARAMS-WRONG':
-            return { 'statusCode': 403, 'ok': false, message: 'Неверное тело запроса!', 'data': data }
+            return { 'statusCode': 400, 'ok': false, message: 'Неверные параметры!', 'data': data }
 
         case 'PASSWORD-WRONG':
-            return { 'statusCode': 400, 'ok': false, message: 'Неверный параметр!', 'data': data }
+            return { 'statusCode': 400, 'ok': false, message: 'Неверный e-mail или пароль!', 'data': data }
 
         case 'DB-ERROR':
             return { 'statusCode': 500, 'ok': false, message: 'Ошибка базы данных!', 'data': data }
@@ -54,7 +54,7 @@ exports.getReaponse = (action, data = null) => {
             return { 'statusCode': 400, 'ok': false, message: 'Email уже существует, регистрация отменена!', 'data': data }
 
         case 'EMAIL-NOT-FOUND':
-            return { 'statusCode': 400, 'ok': false, message: 'Email не найден, пожалуйста, зарегистрируйтесь!', 'data': data }
+            return { 'statusCode': 400, 'ok': false, message: 'Неверный e-mail или пароль!', 'data': data }
 
         case 'REGISTER-OK':
             return { 'statusCode': 200, 'ok': true, message: 'Регистрация прошла успешно!', 'data': data }

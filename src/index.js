@@ -13,8 +13,6 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
-
 const apiKeyChecker = require('./middleware/apiKeyChecker');
 const user = require('./app/users/routes');
 const services = require('./app/services/routes');

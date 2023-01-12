@@ -6,12 +6,9 @@ const {
     loadImages,
     loadImage,
     deleteAllImages,
-    deleteImage,
-    multer
+    deleteImage
 } = require('./models.js');
 
-
-exports.upload = multer;
 
 
 exports.uploadSingleImage = async (req, res) => {

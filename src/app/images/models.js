@@ -1,64 +1,26 @@
 const client = require('../../db/db.js');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
 const { deleteAllImagesFiles } = require('../../helpers/deleteAllImagesFiles.js');
 const { getReaponse } = require('../../helpers/responses.js');
+const fs = require('fs');
 
-const directory = process.env.IMAGES_PATH;
 const tableName = 'laktime_images';
-
-const multerStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-      cb(null, `./${directory}`);
-  },
-  filename: (req, file, cb) => {
-      let image_id1 = Date.now();
-      let image_id2 = Date.now();
-      while (image_id1 === image_id2) {
-          image_id2 = Date.now();
-      }
-      cb(null, `image-${image_id2}${path.extname(file.originalname)}`);
-  }
-});
-
-const multerFilter = (req, file, cb) => {
-  if (!file.originalname.match(/\.(png|jpg)$/)) {
-      return cb(new Error('Можно загрузить изображения только в PNG и JPG формате'))
-      // const  message = getReaponse('EXTENSION-ERROR')
-      // return res.status(message.statusCode).json(message)
-  }
-  cb(null, true)
-};
-
-exports.multer = multer({
-  storage: multerStorage,
-  fileFilter: multerFilter
-});
-
-
-exports.uploadSingleImage = async (req, res) => {
-  const image_path = req.files[0].filename;
-  // const allquery = await client.query
-  // (`INSERT INTO laktime_images(image_id, image_path)  VALUES ('${req.body.name}', '${req.file.filename}')`);
-  const message = getReaponse('DB-ERROR');
-  return res.status(message.statusCode).json(message);
-}
+const directory = process.env.IMAGES_PATH;
 
 exports.uploadMultipleImage = async (req, res) => {
-  let message;
   const files = req.files.length;
   if (files === 0) return res.status(400).json('Изображения не выбраны!');
 
   const valuesArr = [];
   for (let i = 0; i < files; i++) {
-    const image_path = req.files[i].filename;
-    const image_id = image_path.substring(6, image_path.length - 4);
-    valuesArr.push(`('${image_id}','${image_path}')`);
+    const image_name = req.files[i].filename;
+    const image_id = image_name.substring(6, image_name.length - 4);
+    valuesArr.push(`('${image_id}','${image_name}')`);
   }
   const valuesStr = valuesArr.join(',');
 
-  const query = await client.query(`INSERT INTO ${tableName} (image_id, image_path) VALUES ${valuesStr}`);
+  const query = await client.query(`INSERT INTO ${tableName} (image_id, image_name) VALUES ${valuesStr}`);
+
+  let message;
 
   if (query.rowCount === files) {
     const query = await client.query(`SELECT * FROM ${tableName}`);
@@ -74,8 +36,11 @@ exports.uploadMultipleImage = async (req, res) => {
 
 
 exports.loadImages = async (req, res) => {
-  let message;
+
   const query = await client.query(`SELECT * FROM ${tableName}`);
+
+  let message;
+
   if (query.rowCount >= 0) {
     message = getReaponse('OK', query.rows);
   } else {
@@ -87,7 +52,6 @@ exports.loadImages = async (req, res) => {
 
 
 exports.loadImage = async (req, res) => {
-  let message;
   let id = req.params.id;
   if (!id) {
     message = getReaponse('PARAMS-WRONG');
@@ -95,6 +59,9 @@ exports.loadImage = async (req, res) => {
   }
 
   const query = await client.query(`SELECT * FROM ${tableName} WHERE image_id='${id}'`);
+
+  let message;
+
   if (query.rowCount >= 0) {
     message = getReaponse('OK', query.rows);
   } else {
@@ -106,12 +73,39 @@ exports.loadImage = async (req, res) => {
 
 
 exports.deleteAllImages = async (req, res) => {
+  let query;
+  let ids = req.query.ids;
+
+  // console.log('!!!!!!!!!!!!!!')
+  // console.log(ids)
+  // console.log(typeof ids)
+
   let message;
-  const query = await client.query(`DELETE FROM ${tableName}`);
+
+  if(!ids) {
+    query = await client.query(`DELETE FROM ${tableName} RETURNING image_name`);
+    // console.log('Удаление всех из BD')
+    // console.log('RETURNING', query.rows)
+  } else {
+    if (typeof ids === 'object') {
+      ids = ids.join(',').trim();
+    }
+    query = await client.query(`DELETE FROM ${tableName} WHERE id IN (${ids}) RETURNING image_name`);
+    // console.log('Удаление несколько из BD')
+    // console.log('RETURNING', query.rows)
+  }
+
+  const files_path = query.rows;
 
   if (query.rowCount > 0) {
-    deleteAllImagesFiles();
-    message = getReaponse('OK');
+    try {
+      deleteAllImagesFiles(files_path);
+      const query = await client.query(`SELECT * FROM ${tableName}`);
+      message = getReaponse('OK', query.rows)
+    } catch (error) {
+      message = getReaponse('SERVER-ERROR');
+      return res.status(message.statusCode).json(message);
+    }
   } else {
     message = getReaponse('NOT-FOUND');
   }
@@ -136,7 +130,7 @@ exports.deleteImage = async (req, res) => {
     return res.status(message.statusCode).json(message);
   }
 
-  const fileName = query.rows[0].image_path;
+  const fileName = query.rows[0].image_name;
   const filePath = `./${directory}/${fileName}`;
 
   query = await client.query(`DELETE FROM ${tableName} WHERE id='${id}'`);

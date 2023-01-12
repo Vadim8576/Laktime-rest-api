@@ -7,25 +7,25 @@ const tableName = 'laktime_services';
 
 exports.addService = async (req, res) => {
     try {
-        // keys = Object.keys(req.body);
-        // console.log('body keys = ', keys)
-        const body = await requestBodyFieldsChecker(req, res, tableName);
+        // const body = await requestBodyFieldsChecker(req, res, tableName);
+        const body = req.body;
+        
         if (!body) return
-        return await addService(req, res)
+        return await addService(req, res);
     } catch (error) {
+        console.log(error)
         const message = getReaponse('DB-ERROR');
-        return res.status(message.statusCode).json(message)
+        return res.status(message.statusCode).json(message);
     }
 }
 
 
 exports.getServices = async (req, res) => {
-    let message;
     try {
        return await getServices(req, res);
     } catch (error) {
-        message = getReaponse('DB-ERROR');
-        res.status(message.statusCode).json(message)
+        const message = getReaponse('DB-ERROR');
+        res.status(message.statusCode).json(message);
     }
     
 }
@@ -45,7 +45,6 @@ exports.deleteAllServices = async (req, res) => {
     try {
         return await deleteAllServices(req, res);
     } catch (error) {
-        console.log(error)
         const message = getReaponse('DB-ERROR');
         return res.status(message.statusCode).json(message);
     }
@@ -56,7 +55,7 @@ exports.deleteService = async (req, res) => {
     try {
         return await deleteService(req, res);
     } catch (error) {
-        message = getReaponse('DB-ERROR');
+        const message = getReaponse('DB-ERROR');
         return res.status(message.statusCode).json(message)
     }
 }
@@ -64,10 +63,12 @@ exports.deleteService = async (req, res) => {
 
 exports.patchService = async (req, res) => {
     try {
-        const body = await requestBodyFieldsChecker(req, res, tableName);
+        const body = req.body;
+        // const body = await requestBodyFieldsChecker(req, res, tableName);
         if (!body) return
         return await patchService(req, res);
     } catch (error) {
+        console.log(error)
         const message = getReaponse('DB-ERROR');
         return res.status(message.statusCode).json(message)
     }
